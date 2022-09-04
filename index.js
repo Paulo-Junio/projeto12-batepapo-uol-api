@@ -9,10 +9,10 @@ import exibirLimit from './exibirLimit.js';
 
 dotenv.config();
 
-const server = express();
+const app = express();
 
-server.use(express.json());
-server.use(cors())
+app.use(express.json());
+app.use(cors())
 
 const mongoClient = new MongoClient(process.env.URL_MONGO);
 let db;
@@ -33,7 +33,7 @@ const messagesSchema = joi.object({
 });
 
 
-server.post("/participants", async (req,res) => {
+app.post("/participants", async (req,res) => {
 
     try {
         const name = req.body;
@@ -64,7 +64,7 @@ server.post("/participants", async (req,res) => {
     }
 
 });
-server.get("/participants", async (req,res) => {
+app.get("/participants", async (req,res) => {
     
     try{
         const people = await db.collection('participants').find().toArray();
@@ -75,7 +75,7 @@ server.get("/participants", async (req,res) => {
 });
 
 
-server.post("/messages",async (req,res) => {
+app.post("/messages",async (req,res) => {
 
     try {
         
@@ -104,7 +104,7 @@ server.post("/messages",async (req,res) => {
         res.status(500).send()
     }
 });
-server.get("/messages",async (req,res) => {
+app.get("/messages",async (req,res) => {
     const user = req.headers.user;
     const limit = req.query.limit;
     const messages = await db.collection('messages').find().toArray();
@@ -114,7 +114,7 @@ server.get("/messages",async (req,res) => {
 
 
 
-server.post("/status",async (req,res) => {
+app.post("/status",async (req,res) => {
     try{
         const user = req.headers.user;
         const thereIsParticipant = await db.collection('participants').findOne({user});
@@ -155,4 +155,4 @@ async function  removeUsers() {
     }
 }
 
-server.listen(5000);
+app.listen(5000);
